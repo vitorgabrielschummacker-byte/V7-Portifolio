@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V7 Digital Studio — Portfólio</title>
+<meta name="description" content="Projetos de identidade visual, sites e sistemas feitos pela V7 Digital Studio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+
+<!--
+  ===========================================================================
+  COMO USAR ESTE ARQUIVO — LEIA ANTES DE EDITAR
+  ===========================================================================
+  Este arquivo é 1 página só (HTML + CSS + JS juntos). Pra adicionar um novo
+  case no portfólio, procure o bloco "CASE 1" logo abaixo no <body>, copie o
+  bloco inteiro (de <article class="case"> até </article>), cole embaixo do
+  último case, e troque 4 coisas dentro da cópia:
+
+  1. IMG_AQUI          -> troque pelo link (ou base64) da imagem do projeto
+  2. TAG DO SERVIÇO     -> ex: "Landing Page", "Identidade Visual", "App"
+  3. NOME DO CLIENTE    -> ex: "Degust Salgados"
+  4. TEXTO CURTO        -> 1-2 frases sobre o que foi feito
+
+  Se quiser trocar a ordem, é só mover o bloco <article> inteiro de lugar.
+  ===========================================================================
+-->
+
+<style>
+  :root{
+    --purple:#9900FF;
+    --dark-purple:#4A0080;
+    --black:#0D0D0D;
+    --white:#FFFFFF;
+    --gray:#6E6E6E;
+    --light:#F6F6F8;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--white);
+    color:var(--black);
+    font-family:'Manrope', sans-serif;
+    line-height:1.5;
+  }
+
+  /* ---------- HEADER ---------- */
+  header{
+    position:sticky;
+    top:0;
+    z-index:50;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 6vw;
+    background:rgba(255,255,255,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid #eee;
+  }
+
+  header .logo{ height:100px; width:auto; }
+
+  header nav a{
+    color:var(--black);
+    text-decoration:none;
+    font-weight:600;
+    font-size:0.92rem;
+    padding:10px 20px;
+    border-radius:999px;
+    background:var(--black);
+    transition:transform .15s ease;
+  }
+  header nav a{ color:var(--white); }
+  header nav a:active{ transform:scale(0.96); }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:9vh 6vw 7vh;
+    text-align:center;
+  }
+
+  .eyebrow{
+    display:inline-block;
+    font-size:0.72rem;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--purple);
+    font-weight:700;
+    margin-bottom:16px;
+  }
+
+  .hero h1{
+    font-family:'Sora', sans-serif;
+    font-weight:800;
+    font-size:clamp(1.8rem, 5vw, 3rem);
+    line-height:1.15;
+    max-width:16ch;
+    margin:0 auto 18px;
+  }
+
+  .hero h1 span{ color:var(--purple); }
+
+  .hero p{
+    color:var(--gray);
+    font-size:1.02rem;
+    max-width:46ch;
+    margin:0 auto;
+  }
+
+  /* ---------- GRID DE CASES ---------- */
+  .cases{
+    padding:2vh 6vw 8vh;
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:32px;
+    max-width:1100px;
+    margin:0 auto;
+  }
+
+  .case{
+    border-radius:20px;
+    overflow:hidden;
+    background:var(--light);
+    border:1px solid #ececec;
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+
+  .case.in-view{ opacity:1; transform:translateY(0); }
+
+  .case-media{
+    aspect-ratio:4/3;
+    width:100%;
+    background:
+      repeating-linear-gradient(45deg, #eee, #eee 10px, #f4f4f4 10px, #f4f4f4 20px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--gray);
+    font-size:0.85rem;
+    text-align:center;
+    padding:20px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* Se você trocar o placeholder por uma <img>, essa regra deixa ela bonita: */
+  .case-media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
+  .case-body{ padding:22px; }
+
+  .case-tag{
+    display:inline-block;
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--purple);
+    background:#F2E5FF;
+    padding:5px 12px;
+    border-radius:999px;
+    margin-bottom:12px;
+  }
+
+  .case-body h3{
+    font-family:'Sora', sans-serif;
+    font-size:1.15rem;
+    font-weight:700;
+    margin-bottom:8px;
+  }
+
+  .case-body p{
+    color:var(--gray);
+    font-size:0.92rem;
+  }
+
+  /* ---------- CTA FINAL ---------- */
+  .cta{
+    background:var(--black);
+    color:var(--white);
+    text-align:center;
+    padding:10vh 6vw;
+  }
+
+  .cta h2{
+    font-family:'Sora', sans-serif;
+    font-weight:700;
+    font-size:clamp(1.5rem, 4vw, 2.2rem);
+    max-width:20ch;
+    margin:0 auto 14px;
+  }
+
+  .cta h2 span{ color:var(--purple); }
+
+  .cta p{
+    color:#B9B9B9;
+    margin-bottom:34px;
+  }
+
+  .cta-actions{
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    padding:14px 26px;
+    border-radius:999px;
+    font-weight:600;
+    font-size:0.95rem;
+    text-decoration:none;
+    transition:transform .15s ease, opacity .15s ease;
+  }
+  .btn:active{ transform:scale(0.97); }
+
+  .btn-primary{ background:var(--purple); color:var(--white); }
+  .btn-secondary{ background:transparent; color:var(--white); border:1px solid rgba(255,255,255,0.28); }
+
+  footer{
+    text-align:center;
+    padding:26px;
+    font-size:0.75rem;
+    color:var(--gray);
+    background:var(--black);
+    border-top:1px solid #262626;
+  }
+
+  @media (max-width:520px){
+    header nav a{ padding:9px 16px; font-size:0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <img class="logo" src="v7.png"/>
+    <nav><a href="#contato">Falar com a gente</a></nav>
+  </header>
+
+  <section class="hero">
+    <span class="eyebrow">Portfólio</span>
+    <h1>Projetos que saíram da tela e foram <span>pro dia a dia</span> do negócio.</h1>
+    <p>Identidade visual, sites e sistemas feitos sob medida pra negócios locais.</p>
+  </section>
+
+  <section class="cases" id="cases">
+
+    <!-- ===== CASE 1 — troque os 4 pontos marcados abaixo ===== -->
+    <article class="case">
+      <div class="case-media">
+      <img src="foto-1.png"/> 
+      </div>
+      <div class="case-body">
+        <span class="case-tag">TAG DO SERVIÇO</span>
+        <h3>DEGUS'T SALGADOS</h3>
+        <p>Otimizei o Whatsappo, Google e Instagram, criei novos posts e desenvolvi uma landing page profissional para melhorar a apresentação e a captação de clientes.</p>
+      </div>
+    </article>
+
+    <!-- ===== CASE 2 — duplique este bloco pra cada novo projeto ===== -->
+    <article class="case">
+      <div class="case-media">
+        📷 Substitua este bloco por &lt;img src="IMG_AQUI"&gt; com a foto/print do projeto
+      </div>
+      <div class="case-body">
+        <span class="case-tag">TAG DO SERVIÇO</span>
+        <h3>NOME DO CLIENTE</h3>
+        <p>Texto curto (1-2 frases) contando o que foi feito pra esse cliente.</p>
+      </div>
+    </article>
+
+    <!-- ===== CASE 3 ===== -->
+    <article class="case">
+      <div class="case-media">
+        📷 Substitua este bloco por &lt;img src="IMG_AQUI"&gt; com a foto/print do projeto
+      </div>
+      <div class="case-body">
+        <span class="case-tag">TAG DO SERVIÇO</span>
+        <h3>NOME DO CLIENTE</h3>
+        <p>Texto curto (1-2 frases) contando o que foi feito pra esse cliente.</p>
+      </div>
+    </article>
+
+  </section>
+
+  <section class="cta" id="contato">
+    <h2>Quer ver o que a V7 pode fazer <span>pelo seu negócio?</span></h2>
+    <p>É só chamar — respondemos rápido.</p>
+    <div class="cta-actions">
+      <a class="btn btn-primary" href="https://wa.me/SEUNUMEROAQUI" target="_blank" rel="noopener">Falar no WhatsApp</a>
+      <a class="btn btn-secondary" href="https://instagram.com/SEUUSUARIOAQUI" target="_blank" rel="noopener">Ver no Instagram</a>
+    </div>
+  </section>
+
+  <footer>© 2026 V7 Digital Studio</footer>
+
+<script>
+  var items = document.querySelectorAll('.case');
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) e.target.classList.add('in-view');
+    });
+  }, { threshold: 0.15 });
+  items.forEach(function(el){ obs.observe(el); });
+</script>
+
+</body>
+</html>
