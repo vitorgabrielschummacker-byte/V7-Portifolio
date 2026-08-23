@@ -221,6 +221,85 @@
     font-size:0.85rem;
   }
 
+  .case{ position:relative; cursor:pointer; }
+
+  .case-cta{
+    display:block;
+    text-align:center;
+    font-size:0.78rem;
+    font-weight:700;
+    color:var(--purple);
+    padding:0 18px 16px;
+  }
+
+  /* ---------- LIGHTBOX (tela cheia com fundo desfocado) ---------- */
+  .lightbox{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    background:rgba(13,13,13,0.82);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    opacity:0;
+    transition:opacity .25s ease;
+  }
+
+  .lightbox.open{ display:flex; opacity:1; }
+
+  .lightbox-close{
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    border:none;
+    background:rgba(255,255,255,0.12);
+    color:var(--white);
+    font-size:1.6rem;
+    line-height:1;
+    cursor:pointer;
+    z-index:2;
+  }
+  .lightbox-close:active{ transform:scale(0.94); }
+
+  .lightbox-track{
+    display:flex;
+    gap:16px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    width:100%;
+    padding:0 8vw;
+    cursor:grab;
+  }
+  .lightbox-track::-webkit-scrollbar{ display:none; }
+  .lightbox-track.dragging{ cursor:grabbing; scroll-snap-type:none; }
+
+  .lightbox-track img{
+    flex:0 0 auto;
+    scroll-snap-align:center;
+    width:min(86vw, 380px);
+    aspect-ratio:9/16;
+    object-fit:cover;
+    border-radius:20px;
+    background:#1a1a1a;
+    pointer-events:none;
+    -webkit-user-drag:none;
+  }
+
+  .lightbox-hint{
+    margin-top:18px;
+    color:rgba(255,255,255,0.7);
+    font-size:0.8rem;
+    font-weight:600;
+  }
+
   /* ---------- CTA FINAL ---------- */
   .cta{
     background:var(--black);
@@ -301,20 +380,23 @@
 
   <section class="cases" id="cases">
 
-    <!-- ===== CASE 1 — troque os 4 pontos marcados abaixo ===== -->
-    <article class="case">
+    <!-- ===== CASE 1 — troque os 4 pontos marcados abaixo =====
+         data-photos: liste TODAS as fotos desse cliente, separadas por vírgula (sem espaço).
+         A primeira da lista é a capa que aparece no card. -->
+    <article class="case" data-photos="foto-degust-1.png,foto-degust-2.png,foto-degust-3.png">
       <div class="case-media">
-      <img src="foto-1.png"/>
+      <img src="foto-degust-1.png"/>
       </div>
       <div class="case-body">
         <span class="case-tag">TAG DO SERVIÇO</span>
         <h3>DEGUS'T SALGADOS</h3>
         <p>Otimizei o Delivery, Google e Instagram, criando novos conteúdos e desenvolvendo uma landing page profissional para fortalecer a presença digital e aumentar a captação de clientes.</p>
       </div>
+      <span class="case-cta">Clique para ver mais</span>
     </article>
 
     <!-- ===== CASE 2 ===== -->
-    <article class="case">
+    <article class="case" data-photos="foto-2.png">
       <div class="case-media">
       <img src="foto-2.png"/>
       </div>
@@ -323,10 +405,11 @@
         <h3>Seja você</h3>
         <p>Seja o próximo a ganhar mais clientes</p>
       </div>
+      <span class="case-cta">Clique para ver mais</span>
     </article>
 
     <!-- ===== CASE 3 ===== -->
-    <article class="case">
+    <article class="case" data-photos="foto-3.png">
       <div class="case-media">
       <img src="foto-3.png"/>
       </div>
@@ -335,10 +418,11 @@
         <h3>Seja você</h3>
         <p>Seja o próximo a ganhar mais clientes</p>
       </div>
+      <span class="case-cta">Clique para ver mais</span>
     </article>
 
     <!-- ===== CASE 4 ===== -->
-    <article class="case">
+    <article class="case" data-photos="foto-4.png">
       <div class="case-media">
       <img src="foto-4.png"/>
       </div>
@@ -347,10 +431,11 @@
         <h3>Seja você</h3>
         <p>Seja o próximo a ganhar mais clientes</p>
       </div>
+      <span class="case-cta">Clique para ver mais</span>
     </article>
 
     <!-- ===== CASE 5 — duplique este bloco pra cada novo projeto ===== -->
-    <article class="case">
+    <article class="case" data-photos="foto-5.png">
       <div class="case-media">
       <img src="foto-5.png"/>
       </div>
@@ -359,9 +444,17 @@
         <h3>Seja você</h3>
         <p>Seja o próximo a ganhar mais clientes</p>
       </div>
+      <span class="case-cta">Clique para ver mais</span>
     </article>
 
   </section>
+
+  <!-- ===== MODAL / LIGHTBOX — abre ao clicar num case ===== -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Fechar">&times;</button>
+    <div class="lightbox-track" id="lightboxTrack"></div>
+    <div class="lightbox-hint">Arraste para o lado para ver mais fotos</div>
+  </div>
 
   <section class="cta" id="contato">
     <h2>Quer ver o que a V7 pode fazer <span>pelo seu negócio?</span></h2>
@@ -383,31 +476,78 @@
   }, { threshold: 0.15 });
   items.forEach(function(el){ obs.observe(el); });
 
-  // Permite arrastar o carrossel com o mouse no desktop (no celular já funciona com o dedo)
-  var track = document.getElementById('cases');
-  var isDown = false, startX, scrollLeft;
+  // Deixa um elemento arrastável com o mouse no desktop (no celular já funciona com o dedo)
+  function makeDraggable(el){
+    var isDown = false, startX, scrollLeft;
+    el.addEventListener('mousedown', function(e){
+      isDown = true;
+      el.classList.add('dragging');
+      startX = e.pageX - el.offsetLeft;
+      scrollLeft = el.scrollLeft;
+    });
+    window.addEventListener('mouseup', function(){
+      isDown = false;
+      el.classList.remove('dragging');
+    });
+    el.addEventListener('mouseleave', function(){
+      isDown = false;
+      el.classList.remove('dragging');
+    });
+    el.addEventListener('mousemove', function(e){
+      if (!isDown) return;
+      e.preventDefault();
+      var x = e.pageX - el.offsetLeft;
+      var walk = (x - startX) * 1.2;
+      el.scrollLeft = scrollLeft - walk;
+    });
+  }
 
-  track.addEventListener('mousedown', function(e){
-    isDown = true;
-    track.classList.add('dragging');
-    startX = e.pageX - track.offsetLeft;
-    scrollLeft = track.scrollLeft;
+  var track = document.getElementById('cases');
+  makeDraggable(track);
+
+  // ---------- LIGHTBOX: abre ao clicar num case, mostra todas as fotos daquele cliente ----------
+  var lightbox = document.getElementById('lightbox');
+  var lightboxTrack = document.getElementById('lightboxTrack');
+  var lightboxClose = document.getElementById('lightboxClose');
+  var dragThreshold = 6; // se arrastou mais que isso, não conta como clique
+  var draggedDistance = 0;
+
+  track.addEventListener('mousedown', function(){ draggedDistance = 0; });
+  track.addEventListener('mousemove', function(e){ if (e.buttons) draggedDistance += Math.abs(e.movementX || 0); });
+
+  items.forEach(function(caseEl){
+    caseEl.addEventListener('click', function(){
+      if (draggedDistance > dragThreshold) return; // usuário estava arrastando o carrossel, não clicando
+
+      var photos = (caseEl.getAttribute('data-photos') || '').split(',').filter(Boolean);
+      if (!photos.length) return;
+
+      lightboxTrack.innerHTML = '';
+      photos.forEach(function(src){
+        var img = document.createElement('img');
+        img.src = src.trim();
+        lightboxTrack.appendChild(img);
+      });
+
+      lightbox.classList.add('open');
+      lightboxTrack.scrollLeft = 0;
+      document.body.style.overflow = 'hidden';
+    });
   });
-  window.addEventListener('mouseup', function(){
-    isDown = false;
-    track.classList.remove('dragging');
+
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  lightboxClose.addEventListener('click', closeLightbox);
+
+  // clique fora da imagem (no fundo desfocado) fecha
+  lightbox.addEventListener('click', function(e){
+    if (e.target === lightbox) closeLightbox();
   });
-  track.addEventListener('mouseleave', function(){
-    isDown = false;
-    track.classList.remove('dragging');
-  });
-  track.addEventListener('mousemove', function(e){
-    if (!isDown) return;
-    e.preventDefault();
-    var x = e.pageX - track.offsetLeft;
-    var walk = (x - startX) * 1.2;
-    track.scrollLeft = scrollLeft - walk;
-  });
+
+  makeDraggable(lightboxTrack);
 </script>
 
 </body>
