@@ -111,21 +111,56 @@
     margin:0 auto;
   }
 
-  /* ---------- GRID DE CASES ---------- */
-  .cases{
-    padding:2vh 6vw 8vh;
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
-    gap:32px;
-    max-width:1100px;
-    margin:0 auto;
+  /* ---------- DICA DE ARRASTAR ---------- */
+  .swipe-hint{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:0 6vw 2.2vh;
+    color:var(--gray);
+    font-size:0.85rem;
+    font-weight:600;
   }
 
+  .swipe-hint svg{
+    width:18px;
+    height:18px;
+    animation:swipe-nudge 1.6s ease-in-out infinite;
+  }
+
+  @keyframes swipe-nudge{
+    0%, 100%{ transform:translateX(0); opacity:0.55; }
+    50%{ transform:translateX(6px); opacity:1; }
+  }
+
+  /* ---------- CARROSSEL DE CASES ---------- */
+  .cases{
+    display:flex;
+    gap:20px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    padding:2vh 6vw 8vh;
+    max-width:1100px;
+    margin:0 auto;
+    cursor:grab;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .cases::-webkit-scrollbar{ display:none; }
+  .cases.dragging{ cursor:grabbing; scroll-snap-type:none; }
+
   .case{
-    border-radius:20px;
+    flex:0 0 auto;
+    scroll-snap-align:center;
+    width:min(78vw, 300px);
+    aspect-ratio:9/16;
+    border-radius:24px;
     overflow:hidden;
     background:var(--light);
     border:1px solid #ececec;
+    display:flex;
+    flex-direction:column;
     opacity:0;
     transform:translateY(24px);
     transition:opacity .6s ease, transform .6s ease;
@@ -134,7 +169,7 @@
   .case.in-view{ opacity:1; transform:translateY(0); }
 
   .case-media{
-    aspect-ratio:3/2,5;
+    flex:1;
     width:100%;
     background:
       repeating-linear-gradient(45deg, #eee, #eee 10px, #f4f4f4 10px, #f4f4f4 20px);
@@ -153,35 +188,37 @@
   .case-media img{
     width:100%;
     height:100%;
-    object-fit:contain;
+    object-fit:cover;
     background:var(--white);
+    pointer-events:none;
+    -webkit-user-drag:none;
   }
 
-  .case-body{ padding:22px; }
+  .case-body{ padding:16px 18px; }
 
   .case-tag{
     display:inline-block;
-    font-size:0.68rem;
+    font-size:0.64rem;
     font-weight:700;
     letter-spacing:0.05em;
     text-transform:uppercase;
     color:var(--purple);
     background:#F2E5FF;
-    padding:5px 12px;
+    padding:4px 10px;
     border-radius:999px;
-    margin-bottom:12px;
+    margin-bottom:10px;
   }
 
   .case-body h3{
     font-family:'Sora', sans-serif;
-    font-size:1.15rem;
+    font-size:1rem;
     font-weight:700;
-    margin-bottom:8px;
+    margin-bottom:6px;
   }
 
   .case-body p{
     color:var(--gray);
-    font-size:0.92rem;
+    font-size:0.85rem;
   }
 
   /* ---------- CTA FINAL ---------- */
@@ -257,6 +294,11 @@
     <p>Identidade visual, sites e sistemas feitos sob medida pra negócios locais.</p>
   </section>
 
+  <div class="swipe-hint">
+    <span>Arraste para o lado para ver mais</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </div>
+
   <section class="cases" id="cases">
 
     <!-- ===== CASE 1 — troque os 4 pontos marcados abaixo ===== -->
@@ -271,7 +313,7 @@
       </div>
     </article>
 
-    <!-- ===== CASE 2 — duplique este bloco pra cada novo projeto ===== -->
+    <!-- ===== CASE 2 ===== -->
     <article class="case">
       <div class="case-media">
       <img src="foto-2.png"/>
@@ -287,6 +329,30 @@
     <article class="case">
       <div class="case-media">
       <img src="foto-3.png"/>
+      </div>
+      <div class="case-body">
+        <span class="case-tag">TAG DO SERVIÇO</span>
+        <h3>Seja você</h3>
+        <p>Seja o próximo a ganhar mais clientes</p>
+      </div>
+    </article>
+
+    <!-- ===== CASE 4 ===== -->
+    <article class="case">
+      <div class="case-media">
+      <img src="foto-4.png"/>
+      </div>
+      <div class="case-body">
+        <span class="case-tag">TAG DO SERVIÇO</span>
+        <h3>Seja você</h3>
+        <p>Seja o próximo a ganhar mais clientes</p>
+      </div>
+    </article>
+
+    <!-- ===== CASE 5 — duplique este bloco pra cada novo projeto ===== -->
+    <article class="case">
+      <div class="case-media">
+      <img src="foto-5.png"/>
       </div>
       <div class="case-body">
         <span class="case-tag">TAG DO SERVIÇO</span>
@@ -316,6 +382,32 @@
     });
   }, { threshold: 0.15 });
   items.forEach(function(el){ obs.observe(el); });
+
+  // Permite arrastar o carrossel com o mouse no desktop (no celular já funciona com o dedo)
+  var track = document.getElementById('cases');
+  var isDown = false, startX, scrollLeft;
+
+  track.addEventListener('mousedown', function(e){
+    isDown = true;
+    track.classList.add('dragging');
+    startX = e.pageX - track.offsetLeft;
+    scrollLeft = track.scrollLeft;
+  });
+  window.addEventListener('mouseup', function(){
+    isDown = false;
+    track.classList.remove('dragging');
+  });
+  track.addEventListener('mouseleave', function(){
+    isDown = false;
+    track.classList.remove('dragging');
+  });
+  track.addEventListener('mousemove', function(e){
+    if (!isDown) return;
+    e.preventDefault();
+    var x = e.pageX - track.offsetLeft;
+    var walk = (x - startX) * 1.2;
+    track.scrollLeft = scrollLeft - walk;
+  });
 </script>
 
 </body>
